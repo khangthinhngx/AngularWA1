@@ -11,8 +11,11 @@ import { AuthenticationService } from './../../shared/authentication.service';
     styleUrls: ['./register-user.component.css']
 })
 export class RegisterUserComponent implements OnInit {
-
     public registerForm: FormGroup;
+    public errorMessage: string = '';
+    public showError: boolean;
+    public successfulMessage: string = '';
+    public showSucMessage: boolean;
     constructor(private authService: AuthenticationService, private passConfValidator: PasswordConfirmationValidatorService) { }
 
     ngOnInit(): void {
@@ -35,6 +38,7 @@ export class RegisterUserComponent implements OnInit {
     }
 
     public registerUser = (registerFormValue) => {
+        this.showError = false;
         const formValues = { ...registerFormValue }
         const user: UserForRegistrationDto = {
             FirstName: formValues.FirstName,
@@ -46,8 +50,11 @@ export class RegisterUserComponent implements OnInit {
         this.authService.registerUser("registration", user)
             .subscribe(_ => {
                 console.log("Successful registration");
+                this.successfulMessage = "Successful Registration";
+                this.showSucMessage = true;
             }, error => {
-                console.log(error.error.errors);
+                this.errorMessage = error;
+                this.showError = true;
             })
     }
 }

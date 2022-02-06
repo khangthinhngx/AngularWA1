@@ -4,8 +4,9 @@ import { AppComponent } from './app.component';
 import { ItemComponent } from './item/item.component';
 import { ItemFormComponent } from './item/item-form/item-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { ErrorHandlerService } from './shared/error-handler.service';
 @NgModule({
     declarations: [
         AppComponent,
@@ -22,7 +23,13 @@ import { RouterModule } from '@angular/router';
             { path: 'authentication', loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule) }
         ])
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorHandlerService,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
